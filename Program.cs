@@ -1,11 +1,17 @@
 using TodoApi; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models; // נוסיף את הספרייה של Swagger
-
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
 var builder = WebApplication.CreateBuilder(args);
 
-// הוספת DbContext ושימוש במחרוזת חיבור מתוך appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+// // הוספת DbContext ושימוש במחרוזת חיבור מתוך appsettings.json
+// var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+// השגת מחרוזת החיבור ממשתנה סביבה, ואם היא לא קיימת - שימוש בברירת מחדל מה-AppSettings.json
+var connectionString = Environment.GetEnvironmentVariable("MYSQL_CONNECTION_STRING") ?? 
+                        builder.Configuration.GetConnectionString("ToDoDB");
 builder.Services.AddDbContext<ToDoDbContext>(options =>
 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -80,5 +86,7 @@ app.MapDelete("/items/{id}", async (ToDoDbContext db, int id) =>
     return Results.NoContent();
 });
 app.MapGet("/", () => "ToDoListServer API is running! 🚀");
+
+Console.WriteLine("Connection String: " + builder.Configuration.GetConnectionString("ToDoDB"));
 app.Run();
 
