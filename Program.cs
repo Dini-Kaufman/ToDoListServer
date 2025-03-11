@@ -121,14 +121,14 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // הפעלת Swagger
-if (app.Environment.IsDevelopment()) // מציג את Swagger רק בסביבת פיתוח
-{
+// if (app.Environment.IsDevelopment()) // מציג את Swagger רק בסביבת פיתוח
+// {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "ToDo API V1");
     });
-}
+// }
 
 app.UseCors("AllowAll");
 
