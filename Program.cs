@@ -5,10 +5,12 @@ using Microsoft.OpenApi.Models; // נוסיף את הספרייה של Swagger
 var builder = WebApplication.CreateBuilder(args);
 
 // הוספת DbContext ושימוש במחרוזת חיבור מתוך appsettings.json
-var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
-builder.Services.AddDbContext<ToDoDbContext>(options =>
-options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+// var connectionString = builder.Configuration.GetConnectionString("ToDoDB");
+// builder.Services.AddDbContext<ToDoDbContext>(options =>
+// options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
+
+builder.Services.AddDbContext<ToDoDbContext>(options => options.UseMySql(builder.Configuration.GetConnectionString("ToDoDB"), new MySqlServerVersion(new Version(8, 0, 25))));
 // הוספת Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
